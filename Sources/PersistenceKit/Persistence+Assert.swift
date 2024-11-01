@@ -1,8 +1,8 @@
 import Foundation
-import Logger
-import DatabaseLib
+//import Logger
+//import DatabaseLib
 import Key
-import SDUtil
+//import SDUtil
 /**
  * Assert
  * - Fixme: ⚠️️ Maybe build this into a enum? Simplify it somehow?
@@ -14,11 +14,12 @@ extension Persistence {
     * - Remark: In this case -> Wipe keychain
     * - Fixme: ⚠️️ add more info regarding why keychain might stick around etc? and the difference between iOS and macOS on this etc
     * - Fixme: ⚠️️ We should prompt user to start over, see issue for micro copy
+    * - Fixme: ⚠️️ should we check userdefault instead of database?
     */
-   public static var hasAppBeenDeleted: Bool {
+   public static func hasAppBeenDeleted(dbFilePath: String, privKeyName: String) -> Bool {
       // Swift.print("hasKeychain:  \(hasKeychain), hasDB:  \(hasDB)")
-      let hasAppBeenDeleted: Bool = hasKeychain && !hasDB // Check if app has been deleted by verifying if keychain exists but database does not
-//      Logger.debug("\(Trace.trace()) - hasAppBeenDeleted: \(hasAppBeenDeleted))") // Log whether app has been deleted or not
+      let hasAppBeenDeleted: Bool = hasKeychain(privKeyName: privKeyName) && !hasDB(dbFilePath: dbFilePath) // Check if app has been deleted by verifying if keychain exists but database does not
+      // Logger.debug("\(Trace.trace()) - hasAppBeenDeleted: \(hasAppBeenDeleted))") // Log whether app has been deleted or not
       return hasAppBeenDeleted // Return whether app has been deleted or not
    }
    /**
@@ -27,9 +28,9 @@ extension Persistence {
     * - Remark: Show onboard in this case
     * - Fixme: ⚠️️ We could integrate "welcome back" message etc
     */
-   public static var isNewInstall: Bool {
-      let isNewInstall: Bool = isFirstInstall || hasAppBeenDeleted // Check if it's a new install by verifying if it's the first install or the app has been deleted
-//      Logger.debug("\(Trace.trace()) - isNewInstall: \(isNewInstall)") // Log whether it's a new install or not
+   public static func isNewInstall(dbFilePath: String, privKeyName: String) -> Bool {
+      let isNewInstall: Bool = isFirstInstall(dbFilePath: dbFilePath, privKeyName: privKeyName) || hasAppBeenDeleted(dbFilePath: dbFilePath, privKeyName: privKeyName) // Check if it's a new install by verifying if it's the first install or the app has been deleted
+      // Logger.debug("\(Trace.trace()) - isNewInstall: \(isNewInstall)") // Log whether it's a new install or not
       return isNewInstall // Return whether it's a new install or not
    }
    /**
@@ -38,9 +39,9 @@ extension Persistence {
     * - Remark: We don't check for db, because UITest inserts dummy accounts
     * - Fixme: ⚠️️⚠️️ We will remove dummy accounts for UITests soon. too much complexity, and not needed, still relevant?
     */
-   fileprivate static var isFirstInstall: Bool {
-      let isFirstInstall: Bool = !hasKeychain && !hasUserDefault // Check if it's the first install by verifying if keychain and user defaults do not exist
-//      Logger.debug("\(Trace.trace()) - isFirstInstall: \(isFirstInstall)") // Log whether it's the first install or not
+   fileprivate static func isFirstInstall(dbFilePath: String, privKeyName: String) -> Bool {
+      let isFirstInstall: Bool = !hasKeychain(privKeyName: privKeyName) && !hasUserDefault // Check if it's the first install by verifying if keychain and user defaults do not exist
+      // Logger.debug("\(Trace.trace()) - isFirstInstall: \(isFirstInstall)") // Log whether it's the first install or not
       return isFirstInstall // Return whether it's the first install or not
    }
 }
@@ -54,10 +55,10 @@ extension Persistence {
     * - Remark: CoreData database is always deleted after an app is removed for both iOS and macOS
     * - Fixme: ⚠️️ Add reference to persistence discussion etc
     */
-   fileprivate static var hasDB: Bool {
-      let hasDB: Bool = SDUtil.hasPersistentFile(db: CredentialDB.sharedInstance) // let hasDB: Bool = CDUtil.hasPersistentFile(config: DBModel.defaultConfig) // Check if database file exists
-//      Logger.debug("\(Trace.trace()) - hasDB: \(hasDB))") // Log whether database file exists or not
-      return hasDB // Return whether database file exists or not
+   fileprivate static func hasDB(dbFilePath: String) -> Bool {
+      let hasPersistentFile: Bool = FileManager().fileExists(atPath: dbFilePath) // Check if the persistent store file exists at the given URL
+      // Logger.debug("\(Trace.trace()) - hasPersistentFile: \(hasPersistentFile)") - This line is commented out and does not affect the code
+      return hasPersistentFile // Return `true` if the persistent store file exists, `false` otherwise
    }
    /**
     * This method checks the existence of user defaults for the app. It does this by verifying if it's not the first launch of the app. If it's not the first launch, it implies that user defaults exist.
@@ -69,7 +70,7 @@ extension Persistence {
     */
    fileprivate static var hasUserDefault: Bool {
       let hasUserDefault: Bool = !getIsFirstLaunch() // Check if user defaults exist by verifying if it's not the first launch
-//      Logger.debug("\(Trace.trace()) - hasUserDefault: \(hasUserDefault))") // Log whether user defaults exist or not
+      // Logger.debug("\(Trace.trace()) - hasUserDefault: \(hasUserDefault))") // Log whether user defaults exist or not
       return hasUserDefault // Return whether user defaults exist or not
    }
    /**
@@ -79,17 +80,18 @@ extension Persistence {
     * - Remark: KeyChain persists after an app is deleted for both macOS and iOS
     * - Remark: Keychain data always persist after app deletion for iOS ref: https://stackoverflow.com/questions/60485419/ios-keychain-data-will-persist-after-app-deleted-and-reinstall
     */
-   fileprivate static var hasKeychain: Bool {
+   fileprivate static func hasKeychain(privKeyName: String) -> Bool {
       let hasKeychain: Bool = { // Check if key data exists in keychain
          do {
-            let data: Data? = try Auth.getKeyData(privKeyName: CryptoDB.privKeyName) // Get key data from keychain
+            let data: Data? = try KeyQuery.getKeyData(privKeyName: privKeyName) // Get key data from keychain
             return data != nil // Return whether key data exists or not
          } catch { // Handle error if key data cannot be retrieved (this will be called the first time the app is started etc)
-            Logger.warn("\(Trace.trace()) - error: \(String(describing: (error as? KeyError)?.localizedDescription)))") // Log the error
+            Swift.print("Error: \(String(describing: (error as? KeyError)?.localizedDescription)))")
+            // Logger.warn("\(Trace.trace()) - error: \(String(describing: (error as? KeyError)?.localizedDescription)))") // Log the error
             return false // Return false if key data cannot be retrieved
          }
       }()
-//      Logger.debug("\(Trace.trace()) - hasKeychain: \(hasKeychain))") // Log whether key data exists or not
+      // Logger.debug("\(Trace.trace()) - hasKeychain: \(hasKeychain))") // Log whether key data exists or not
       return hasKeychain // Return whether key data exists or not
    }
 }

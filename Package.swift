@@ -1,23 +1,28 @@
-// swift-tools-version: 5.10
-// The swift-tools-version declares the minimum version of Swift required to build this package.
-
+// swift-tools-version:5.9
 import PackageDescription
 
 let package = Package(
-    name: "PersistenceKit",
-    products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
-        .library(
-            name: "PersistenceKit",
-            targets: ["PersistenceKit"]),
-    ],
-    targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        .target(
-            name: "PersistenceKit"),
-        .testTarget(
-            name: "PersistenceKitTests",
-            dependencies: ["PersistenceKit"]),
-    ]
+   name: "PersistenceKit",
+   platforms: [
+      .macOS(.v14), // macOS 14 and later
+      .iOS(.v17), // iOS 17 and later
+   ],
+   products: [
+      .library(
+         name: "PersistenceKit",
+         targets: ["PersistenceKit"]),
+   ],
+   dependencies: [
+      .package(url: "https://github.com/eonist/UserDefaultSugar", branch: "master"),
+      .package(url: "https://github.com/sentryco/Key", branch: "main")
+   ],
+   targets: [
+      .target(
+         name: "PersistenceKit",
+         dependencies: [ "Key", "UserDefaultSugar"]),
+      .testTarget(
+         name: "PersistenceKitests",
+         dependencies: ["PersistenceKit"]),
+   ]
 )
+

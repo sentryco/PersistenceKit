@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "key",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sentryco/Key",
+      "state" : {
+        "branch" : "main",
+        "revision" : "99c21786ad9c2e8a374e1606eb080a261dd6d344"
+      }
+    },
+    {
+      "identity" : "userdefaultsugar",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/eonist/UserDefaultSugar",
+      "state" : {
+        "branch" : "master",
+        "revision" : "efff58f906c95b57aa7c806cefdae1bd1244c252"
+      }
+    }
+  ],
+  "version" : 2
+}

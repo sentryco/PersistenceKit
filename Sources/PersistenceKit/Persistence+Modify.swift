@@ -1,6 +1,7 @@
 import Foundation
-import Logger
+//import Logger
 import Key
+import UserDefaultSugar
 /**
  * Modify
  */
@@ -14,7 +15,7 @@ extension Persistence {
     * - Fixme: ⚠️️ add sources to these statements etc, things may change over time with new versions etc?
     */
    public static func reset() {
-      Logger.debug("\(Trace.trace()) - reset()") // Log that reset() function is called
+      // Logger.debug("\(Trace.trace()) - reset()") // Log that reset() function is called
       resetKeychain() // Call resetKeychain() function to reset keychain
       resetUserDefault() // Call resetUserDefault() function to reset user defaults
    }
@@ -27,12 +28,13 @@ extension Persistence {
     * - Fixme: ⚠️️⚠️️ We should warn user with a popup before clearning keychain. Apple might cause change some API in the future that might accidentally trigger this etc.
     */
    fileprivate static func resetKeychain() {
-      Logger.debug("\(Trace.trace()) - resetKeychain()") // Log that resetKeychain() function is called
+      // Logger.debug("\(Trace.trace()) - resetKeychain()") // Log that resetKeychain() function is called
       if isFirstRun { // Check if it's the first run
          do {
             try Key.deleteAll() // Delete all keys from keychain
          } catch {
-            Logger.error(Trace.trace("Orphan keychain, Err: \(error.localizedDescription)")) // Log error if keys cannot be deleted
+            Swift.print("Orphan keychain, Err: \(error.localizedDescription)")
+            // Logger.error(Trace.trace("Orphan keychain, Err: \(error.localizedDescription)")) // Log error if keys cannot be deleted
          }
       }
    }
@@ -42,16 +44,16 @@ extension Persistence {
     * - Fixme: ⚠️️ this is a bit beta
     */
    fileprivate static func resetUserDefault() {
-      Logger.debug("\(Trace.trace()) - resetUserDefault()") // Log that resetUserDefault() function is called
+      // Logger.debug("\(Trace.trace()) - resetUserDefault()") // Log that resetUserDefault() function is called
       UserDefaults.removeAll() // Call removeAll() function to remove all user defaults
-//      UserDefaults.debug()
+      // UserDefaults.debug()
       // Swift.print("PrefsStore.$shouldPresentOnboarding: \(PrefsStore.$shouldPresentOnboarding.wrappedValue)")
       UserDefaults.resetStandardUserDefaults() // ⚠️️ new
-      Logger.debug("\(Trace.trace()) - ⚠️️ after reset user def")
-//      UserDefaults.debug()
+      // Logger.debug("\(Trace.trace()) - ⚠️️ after reset user def")
+      // UserDefaults.debug()
       // Swift.print("PrefsStore.$shouldPresentOnboarding: \(PrefsStore.$shouldPresentOnboarding.wrappedValue)")
       UserDefaults.standard.synchronize()
-//      UserDefaults.debug()
+      // UserDefaults.debug()
       // Swift.print("PrefsStore.$shouldPresentOnboarding: \(PrefsStore.$shouldPresentOnboarding.wrappedValue)")
    }
 }

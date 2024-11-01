@@ -1,5 +1,5 @@
 import Foundation
-import Logger
+//import Logger
 /**
  * UserDefault
  * - Description: This extension of the Persistence class provides methods for managing UserDefaults, specifically for determining if the application is being launched for the first time.
