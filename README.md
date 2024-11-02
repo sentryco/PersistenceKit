@@ -1,9 +1,11 @@
+[![Tests](https://github.com/sentryco/PersistenceKit/actions/workflows/Tests.yml/badge.svg)](https://github.com/sentryco/PersistenceKit/actions/workflows/Tests.yml)
+
 # PersistenceKit
 
 > Persistence check for iOS / macOS
 
 ## Description
-Persistence Detection. Detects whether the app is a fresh install or a reinstall, which can influence authentication flows and user data management. Handles nuances of persistence across iOS and macOS.
+Detects whether the app is a fresh install or a reinstall, which can influence authentication flows and user data management. Handles nuances of persistence across iOS and macOS.
 
 ## Features
 - Assert database existence
