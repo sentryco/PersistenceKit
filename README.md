@@ -3,7 +3,7 @@
 > Persistence check for iOS / macOS
 
 ## Description
-Assert if your app is a new install. Or has been installed before. 
+Persistence Detection. Detects whether the app is a fresh install or a reinstall, which can influence authentication flows and user data management. Handles nuances of persistence across iOS and macOS.
 
 ## Features
 - Assert database existence
@@ -21,9 +21,11 @@ Persistence.reset()
 
 ## Install
 
-## Dependency
+```swift
+.package(url: "https://github.com/sentryco/PersistenceKit")
+```
 
 ## Todo
 
-- Add dependency list
+- Add dependency list to readme
 - Use smaller Keychain lib, from telemetry etc
