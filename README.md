@@ -1,4 +1,5 @@
 [![Tests](https://github.com/sentryco/PersistenceKit/actions/workflows/Tests.yml/badge.svg)](https://github.com/sentryco/PersistenceKit/actions/workflows/Tests.yml)
+[![codebeat badge](https://codebeat.co/badges/6cd2817d-e317-42ad-8363-c127361b27e5)](https://codebeat.co/projects/github-com-sentryco-persistencekit-main)
 
 # PersistenceKit
 
