@@ -5,12 +5,12 @@ let package = Package(
    name: "PersistenceKit",
    platforms: [
       .macOS(.v14), // macOS 14 and later
-      .iOS(.v17), // iOS 17 and later
+      .iOS(.v17) // iOS 17 and later
    ],
    products: [
       .library(
          name: "PersistenceKit",
-         targets: ["PersistenceKit"]),
+         targets: ["PersistenceKit"])
    ],
    dependencies: [
       .package(url: "https://github.com/eonist/UserDefaultSugar", branch: "master"),
@@ -22,7 +22,6 @@ let package = Package(
          dependencies: [ "Key", "UserDefaultSugar"]),
       .testTarget(
          name: "PersistenceKitests",
-         dependencies: ["PersistenceKit"]),
+         dependencies: ["PersistenceKit"])
    ]
 )
-
