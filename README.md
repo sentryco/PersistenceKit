@@ -6,19 +6,36 @@
 > Persistence check for iOS / macOS
 
 ## Description
-Detects whether the app is a fresh install or a reinstall, which can influence authentication flows and user data management. Handles nuances of persistence across iOS and macOS.
+
+PersistenceKit is a utility library designed to detect the persistence state of your iOS and macOS applications. It helps determine whether an app is a fresh install, a reinstall, or if it has been deleted and reinstalled. This information can influence authentication flows, user onboarding, and data management strategies. By handling the nuances of persistence across different platforms, PersistenceKit simplifies state management and enhances user experience.
 
 ## Features
-- Assert database existence
-- Assert keychain key existence
-- Assert userdefault existence
-- Reset userdefault and keychain
+
+- **Assert Database Existence**: Checks if the application's database file exists at the specified path.
+- **Assert Keychain Key Existence**: Verifies the presence of a private key in the Keychain.
+- **Assert UserDefaults Existence**: Determines if specific entries exist in `UserDefaults`.
+- **Reset UserDefaults and Keychain**: Clears all data from `UserDefaults` and the Keychain to reset the application's state.
 
 ## Example
 
 ```swift
-Persistence.hasAppBeenDeleted(dbFilePath: "", privKeyName: "")
-Persistence.isNewInstall(dbFilePath: "", privKeyName: "")
+import PersistenceKit
+
+// Define your database file path and private key name
+let dbFilePath = "path/to/your/database.sqlite"
+let privKeyName = "com.yourapp.privateKey"
+
+// Check if the app has been deleted and reinstalled
+if Persistence.hasAppBeenDeleted(dbFilePath: dbFilePath, privKeyName: privKeyName) {
+    // Handle reinstallation logic, such as prompting for re-authentication
+}
+
+// Check if it's a new installation
+if Persistence.isNewInstall(dbFilePath: dbFilePath, privKeyName: privKeyName) {
+    // Present onboarding or initial setup
+}
+
+// Reset the persistence data (keychain and user defaults)
 Persistence.reset()
 ```
 
@@ -28,7 +45,11 @@ Persistence.reset()
 .package(url: "https://github.com/sentryco/PersistenceKit")
 ```
 
+## Dependencies
+
+- [UserDefaultSugar](https://github.com/eonist/UserDefaultSugar)
+- [Key](https://github.com/sentryco/Key)
+
 ## Todo
 
-- Add dependency list to readme
 - Use smaller Keychain lib, from telemetry etc

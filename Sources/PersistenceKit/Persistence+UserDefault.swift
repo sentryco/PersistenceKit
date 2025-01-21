@@ -26,6 +26,7 @@ extension Persistence {
     * - Remark: Since iOS12, it isn't mandatory to call `.syncronize` Apple says: https://developer.apple.com/documentation/foundation/userdefaults/1414005-synchronize
     * - Note: Ref: https://stackoverflow.com/questions/9964371/how-to-detect-first-time-app-launch-on-an-iphone
     * - Fixme: ⚠️️ Move this to UserDefault file etc, Add this to the prefs userdefaults etc, or not?
+    * fixme: this method both checks and sets a value, which can be unclear. Refactor it to separate these concerns. if Persistence.isFirstLaunch {  Persistence.setHasLaunchedBeforeFlag() }
     */
    internal static func getIsFirstLaunch() -> Bool {
       if isFirstRun { // Check if it's the first run
@@ -35,3 +36,4 @@ extension Persistence {
       return false // Return false if it's not the first run
    }
 }
+   

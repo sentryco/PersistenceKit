@@ -52,6 +52,7 @@ extension Persistence {
       // Logger.debug("\(Trace.trace()) - ⚠️️ after reset user def")
       // UserDefaults.debug()
       // Swift.print("PrefsStore.$shouldPresentOnboarding: \(PrefsStore.$shouldPresentOnboarding.wrappedValue)")
+      // fixme remove this line?  its generally discouraged? double check with pplx
       UserDefaults.standard.synchronize()
       // UserDefaults.debug()
       // Swift.print("PrefsStore.$shouldPresentOnboarding: \(PrefsStore.$shouldPresentOnboarding.wrappedValue)")
